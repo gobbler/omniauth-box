@@ -14,12 +14,20 @@ module OmniAuth
 
       attr_accessor :auth_token
 
+      def api
+        if request.params["display"] == "mobile"
+          ::Box::Api.new(options[:api_token], "https://m.box.com")
+        else
+          ::Box::Api.new(options[:api_token])
+        end
+      end
+
       def account
-        ::Box::Account.new(options[:api_token])
+        ::Box::Account.new(api)
       end
 
       def client
-        client = ::Box::Api.new(options[:api_token])
+        client = api
         client.set_auth_token(self.auth_token)
         client
       end
